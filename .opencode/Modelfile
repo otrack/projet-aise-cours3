@@ -1,0 +1,8 @@
+# ministral-3:3b with a 32k-token context window, large enough for opencode,
+# and a temperature of 0, so that its answers are reproducible.
+# Ollama ignores the context size sent through its OpenAI-compatible API, which opencode uses:
+# it has to be part of the model. Build it with
+#   ollama create ministral-3:3b-32k -f .opencode/Modelfile
+FROM ministral-3:3b
+PARAMETER num_ctx 32768
+PARAMETER temperature 0
