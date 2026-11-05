@@ -18,7 +18,7 @@ from typing import Iterator
 
 API_URL = "https://{lang}.wikipedia.org/w/api.php"
 # Wikimedia asks every client for a descriptive User-Agent, and blocks the generic ones
-USER_AGENT = "wikidiff/0.1 (Telecom SudParis teaching project; https://github.com/otrack/project-aise-lecture3)"
+USER_AGENT = "wikidiff/0.1 (Telecom SudParis teaching project; https://github.com/otrack/projet-aise-cours3)"
 BATCH_SIZE = 50  # the most revisions, with their content, that the API returns per request
 
 
