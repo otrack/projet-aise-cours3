@@ -4,7 +4,7 @@ Ce projet sert à mettre en pratique les quatre cas d'usage du cours 3
 (section 5, « Le développement agentique : autonomie et pratique ») :
 pour chacun, une tâche que vous déléguez à un agent de code, et dont vous supervisez la réalisation.
 
-## Installation : opencode et un modèle
+## 1. Installation : opencode et un modèle
 
 L'agent de code est [opencode](https://opencode.ai), en version 2.2.5 ou plus récente. Sous Linux,
 installez-le avec :
@@ -16,6 +16,8 @@ curl -fsSL https://opencode.ai/v2/install | bash
 Pour les autres systèmes, suivez les [instructions officielles](https://opencode.ai/download).
 Vérifiez ensuite la version avec `opencode --version`.
 
+### 1.1 Le modèle : trois options
+
 Il lui faut ensuite un modèle. Trois options, de la plus recommandée à la moins recommandée :
 
 | option | coût | vitesse | ce qu'il faut |
@@ -24,7 +26,8 @@ Il lui faut ensuite un modèle. Trois options, de la plus recommandée à la moi
 | B. un modèle gratuit d'OpenCode Zen | gratuit, pour une durée limitée | rapide | rien : ni compte, ni clé |
 | C. un modèle local, avec Ollama | gratuit | lente, très lente sans GPU dédié | Ollama (cours 1), et une machine assez puissante (voir ci-dessous) |
 
-### Option A : Mistral, avec une clé d'API
+<details>
+<summary><strong>Option A : Mistral, avec une clé d'API</strong></summary>
 
 **Attention : vos données peuvent servir à entraîner les modèles de Mistral.** Avec cette
 option, vos prompts, votre code et les sorties des commandes sont envoyés à Mistral, qui, sur le
@@ -48,7 +51,10 @@ confidentiels (un projet d'entreprise ou de stage, des données personnelles).
    requêtes par minute, assez pour un agent. Les modèles plus gros de Mistral (*Mistral Small*,
    *Mistral Medium*) ne sont pas disponibles sur ce plan.
 
-### Option B : un modèle gratuit d'OpenCode Zen
+</details>
+
+<details>
+<summary><strong>Option B : un modèle gratuit d'OpenCode Zen</strong></summary>
 
 [OpenCode Zen](https://opencode.ai/docs/zen/) est le service de modèles d'opencode. Certains de
 ses modèles sont gratuits, pour une durée limitée, et s'utilisent sans compte ni clé.
@@ -67,7 +73,10 @@ Ces modèles sont bien plus gros que ceux de l'option A : les tâches de ce proj
 moins de difficultés. Supervisez-les quand même ; leurs erreurs sont plus rares, mais moins
 visibles.
 
-### Option C : un modèle local, avec Ollama
+</details>
+
+<details>
+<summary><strong>Option C : un modèle local, avec Ollama</strong></summary>
 
 Rien ne quitte votre machine, mais un modèle qui y tient est petit, ou lent. Deux modèles :
 
@@ -112,7 +121,9 @@ une minute et demie par étape de l'agent.
    Pour `ministral-3:3b-32k`, ramenez alors `num_ctx` à 16384 dans le `Modelfile`, et recréez le
    modèle.
 
-### Dans opencode
+</details>
+
+### 1.2 Dans opencode
 
 - tapez votre demande, puis Entrée ; opencode lit `AGENTS.md` au début de chaque session ;
 - `Tab` passe de l'agent *build* (il lit, écrit et exécute) à l'agent *plan* (il lit et
@@ -126,7 +137,7 @@ une minute et demie par étape de l'agent.
   `"allow"` ; le mode YOLO, qui approuve tout, se lance avec
   `opencode --auto`.
 
-### Voir l'échange entre l'agent et le modèle
+### 1.3 Voir l'échange entre l'agent et le modèle
 
 `debug/trace.py` se place entre opencode et le modèle, et affiche chaque échange : ce que le modèle
 reçoit, et ce qu'il répond. C'est la boucle agentique du cours, vue de l'intérieur. Il fonctionne
@@ -159,7 +170,7 @@ le nombre de tokens du prompt. Observez par exemple :
 - chaque appel d'outil, suivi de son résultat dans la requête suivante ;
 - les requêtes qu'opencode fait pour son propre compte, comme le titre de la session.
 
-## Le programme
+## 2. Le programme
 
 `wikidiff.py` prend une recherche Wikipedia, retient la première page trouvée, puis télécharge
 toutes ses versions (ses *révisions*) avec la
@@ -185,7 +196,7 @@ le benchmark ont besoin du réseau.
 | `tests/test_perf.py` | le benchmark : le temps de téléchargement des révisions d'une page |
 | `debug/trace.py` | affiche les échanges entre opencode et le modèle |
 | `AGENTS.md` | le contexte du projet, pour l'agent |
-| `.opencode/opencode.json`, `.opencode/Modelfile` | la configuration d'opencode, et du modèle |
+| `.opencode/opencode.json`, `.opencode/Modelfile`, `.opencode/Modelfile.gpt-oss` | la configuration d'opencode, et des modèles locaux |
 | `.opencode/skills/python-unit-tests/` | une skill pour lancer les tests, qu'opencode charge au besoin |
 
 Lancez toutes les commandes depuis la racine du projet :
@@ -198,7 +209,7 @@ python -m tests.test_perf                 # le benchmark (unittest ne le lance p
 
 **Le test d'intégration échoue : c'est voulu**, c'est l'objet de la tâche 3.
 
-## Avant chaque tâche
+## 3. Avant chaque tâche
 
 - commitez, puis créez une branche pour la tâche : `git diff` montrera exactement ce que l'agent
   a changé, et `git restore .` l'annulera ;
@@ -208,7 +219,9 @@ python -m tests.test_perf                 # le benchmark (unittest ne le lance p
 
 Les prompts ci-dessous sont des points de départ : adaptez-les.
 
-## Tâche 1 : comprendre un code inconnu
+## 4. Les tâches
+
+### 4.1 Tâche 1 : comprendre un code inconnu
 
 > Lis `wikidiff.py`, sans le modifier, puis réponds à deux questions, en donnant pour chaque
 > réponse le numéro de la ligne concernée :
@@ -226,7 +239,7 @@ Les prompts ci-dessous sont des points de départ : adaptez-les.
   combien de requêtes cela fait-il d'après la
   [documentation de l'API](https://www.mediawiki.org/wiki/API:Revisions) (`rvlimit`) ?
 
-## Tâche 2 : optimiser les performances
+### 4.2 Tâche 2 : optimiser les performances
 
 1. En mode plan :
    > `fetch_revisions`, dans `wikidiff.py`, télécharge les lots de révisions l'un après
@@ -253,7 +266,7 @@ Les prompts ci-dessous sont des points de départ : adaptez-les.
 - le test d'intégration échoue toujours : ce n'est pas l'objet de cette tâche, l'agent ne doit
   pas s'en occuper.
 
-## Tâche 3 : corriger un test qui échoue
+### 4.3 Tâche 3 : corriger un test qui échoue
 
 > `tests/test_integration.py` échoue avec une `KeyError`.
 > 1. Lance `python -m unittest tests.test_integration -v`, et lis la trace de l'erreur.
@@ -274,7 +287,7 @@ Les prompts ci-dessous sont des points de départ : adaptez-les.
   de la cause ;
 - vérifiez que le test est intact : `git diff tests/` doit être vide.
 
-## Tâche 4 : ajouter une fonctionnalité, les tests d'abord
+### 4.4 Tâche 4 : ajouter une fonctionnalité, les tests d'abord
 
 On ajoute une option `--api rest`, qui fait la recherche et la liste des identifiants des
 révisions avec la [MediaWiki REST API](https://www.mediawiki.org/wiki/API:REST_API/Reference),
