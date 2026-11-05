@@ -156,8 +156,9 @@ avec les options A et C.
 
 2. Dans un second terminal, lancez `opencode`, puis choisissez avec `/models` le modèle tracé :
    *Ministral 3 14B (traced)* pour l'option A ; *Ministral 3 3B (32k context, traced)* ou
-   *gpt-oss 20B (32k context, traced)* pour l'option C. Ses requêtes passent alors par `trace.py` (port 11436 pour Mistral, 11435 pour
-   Ollama), au lieu d'aller directement au modèle.
+   *gpt-oss 20B (32k context, traced)* pour l'option C. Ses requêtes passent alors par
+   `trace.py` (port 11436 pour Mistral, 11435 pour Ollama), au lieu d'aller directement au
+   modèle.
 
 Pour chaque requête, `trace.py` affiche le nombre de messages et d'outils envoyés, puis les seuls
 messages ajoutés depuis la dernière réponse du modèle (au début d'une conversation, le
@@ -223,12 +224,11 @@ Les prompts ci-dessous sont des points de départ : adaptez-les.
 
 ### 4.1 Tâche 1 : comprendre un code inconnu
 
-> Lis `wikidiff.py`, sans le modifier, puis réponds à deux questions, en donnant pour chaque
-> réponse le numéro de la ligne concernée :
-> 1. Dans `list_revision_ids`, quelle condition arrête la boucle ?
-> 2. Pour une page de 340 révisions, combien de fois `fetch_revisions` appelle-t-elle
->    `api_get` ? Compte séparément les appels faits par `list_revision_ids` et ceux faits par
->    `fetch_batch`, puis additionne.
+```text
+Lis `wikidiff.py`, sans le modifier, puis réponds à deux questions, en donnant pour chaque réponse le numéro de la ligne concernée :
+1. Dans `list_revision_ids`, quelle condition arrête la boucle ?
+2. Pour une page de 340 révisions, combien de fois `fetch_revisions` appelle-t-elle `api_get` ? Compte séparément les appels faits par `list_revision_ids` et ceux faits par `fetch_batch`, puis additionne.
+```
 
 À superviser :
 
@@ -242,17 +242,23 @@ Les prompts ci-dessous sont des points de départ : adaptez-les.
 ### 4.2 Tâche 2 : optimiser les performances
 
 1. En mode plan :
-   > `fetch_revisions`, dans `wikidiff.py`, télécharge les lots de révisions l'un après
-   > l'autre, et c'est lent. Lance `python -m tests.test_perf` pour le mesurer. Puis propose une nouvelle
-   > version de `fetch_revisions` qui appelle `fetch_batch` sur les lots en parallèle, avec
-   > `concurrent.futures.ThreadPoolExecutor(max_workers=4)` et `pool.map`, en gardant l'ordre
-   > des lots. Montre le code complet de la nouvelle fonction.
+
+   ```text
+   `fetch_revisions`, dans `wikidiff.py`, télécharge les lots de révisions l'un après l'autre, et c'est lent. Lance `python -m tests.test_perf` pour le mesurer. Puis propose une nouvelle version de `fetch_revisions` qui appelle `fetch_batch` sur les lots en parallèle, avec `concurrent.futures.ThreadPoolExecutor(max_workers=4)` et `pool.map`, en gardant l'ordre des lots. Montre le code complet de la nouvelle fonction.
+   ```
+
 2. Relisez la proposition ; si elle vous convient, passez en mode *build* :
-   > Remplace maintenant `fetch_revisions` dans `wikidiff.py` par le code que tu as proposé,
-   > avec l'outil `edit`. Puis lance `python -m tests.test_perf`.
+
+   ```text
+   Remplace maintenant `fetch_revisions` dans `wikidiff.py` par le code que tu as proposé, avec l'outil `edit`. Puis lance `python -m tests.test_perf`.
+   ```
 
    Si l'agent annonce ce qu'il va faire, puis s'arrête sans rien modifier (un défaut courant
-   des petits modèles), relancez-le : « Fais-le maintenant, avec l'outil `edit`. »
+   des petits modèles), relancez-le :
+
+   ```text
+   Fais-le maintenant, avec l'outil `edit`.
+   ```
 
 À superviser :
 
@@ -268,12 +274,13 @@ Les prompts ci-dessous sont des points de départ : adaptez-les.
 
 ### 4.3 Tâche 3 : corriger un test qui échoue
 
-> `tests/test_integration.py` échoue avec une `KeyError`.
-> 1. Lance `python -m unittest tests.test_integration -v`, et lis la trace de l'erreur.
-> 2. Lis, dans `wikidiff.py`, la fonction où l'erreur se produit.
-> 3. Explique la cause en une phrase.
-> 4. Corrige cette fonction avec l'outil `edit`, sans modifier les tests, puis relance
->    `python -m unittest -v`.
+```text
+`tests/test_integration.py` échoue avec une `KeyError`.
+1. Lance `python -m unittest tests.test_integration -v`, et lis la trace de l'erreur.
+2. Lis, dans `wikidiff.py`, la fonction où l'erreur se produit.
+3. Explique la cause en une phrase.
+4. Corrige cette fonction avec l'outil `edit`, sans modifier les tests, puis relance `python -m unittest -v`.
+```
 
 À superviser :
 
@@ -308,7 +315,10 @@ Remplacez chaque `TODO` ci-dessous avant de passer à l'étape suivante.
 1. Le plan. Demandez à l'agent quels endpoints de la REST API utiliser, quelles fonctions ajouter
    (par exemple `rest_search_title` et `rest_list_revision_ids`, sur le modèle de `search_title`
    et `list_revision_ids`), et quels tests écrire ; il ne doit pas écrire de code.
-   > TODO : votre prompt.
+
+   ```text
+   TODO : votre prompt.
+   ```
 
    Relisez le plan avec la documentation de la REST API : comment y obtient-on l'historique
    d'une page, par combien de révisions, et dans quel ordre ? Combien de requêtes faut-il pour
@@ -323,13 +333,19 @@ Remplacez chaque `TODO` ci-dessous avant de passer à l'étape suivante.
    Quelques pistes : la pagination de l'historique, l'ordre des identifiants, un titre avec des
    espaces, une apostrophe ou un `/` (`AC/DC`), une page qui n'existe pas, une recherche sans
    résultat. Puis faites écrire les tests, sans réseau, sans l'implémentation :
-   > TODO : votre prompt.
+
+   ```text
+   TODO : votre prompt.
+   ```
 
 3. Relisez les tests : couvrent-ils vos cas ? Échouent-ils tous, faute d'implémentation ?
    Puis commitez-les.
 
 4. L'implémentation.
-   > TODO : votre prompt.
+
+   ```text
+   TODO : votre prompt.
+   ```
 
 5. La validation. Écrivez les commandes qui montrent que la tâche est finie :
    ```sh
