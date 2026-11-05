@@ -1,0 +1,8 @@
+# gpt-oss:20b with a 32k-token context window, large enough for opencode. Its temperature is left
+# at the value its authors recommend (1): it reasons before it answers.
+# Ollama ignores the context size sent through its OpenAI-compatible API, which opencode uses:
+# it has to be part of the model. Build it with
+#   ollama pull gpt-oss:20b
+#   ollama create gpt-oss:20b-32k -f .opencode/Modelfile.gpt-oss
+FROM gpt-oss:20b
+PARAMETER num_ctx 32768

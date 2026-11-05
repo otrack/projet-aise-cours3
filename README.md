@@ -16,14 +16,13 @@ curl -fsSL https://opencode.ai/v2/install | bash
 Pour les autres systèmes, suivez les [instructions officielles](https://opencode.ai/download).
 Vérifiez ensuite la version avec `opencode --version`.
 
-Il lui faut ensuite un modèle. Deux options :
+Il lui faut ensuite un modèle. Trois options, de la plus recommandée à la moins recommandée :
 
 | option | coût | vitesse | ce qu'il faut |
 |---|---|---|---|
 | A. Mistral, avec une clé d'API | gratuit (plan *Experiment*), avec des limites de débit | rapide | un compte Mistral (une adresse e-mail suffit) |
-| B. un modèle local, avec Ollama | gratuit | correcte avec un GPU dédié, très lente sinon | Ollama (cours 1), et une machine assez puissante (voir ci-dessous) |
-
-Dans les deux cas, le modèle est le même : Ministral 3B, que vous utilisez depuis le cours 1.
+| B. un modèle gratuit d'OpenCode Zen | gratuit, pour une durée limitée | rapide | rien : ni compte, ni clé |
+| C. un modèle local, avec Ollama | gratuit | lente, très lente sans GPU dédié | Ollama (cours 1), et une machine assez puissante (voir ci-dessous) |
 
 ### Option A : Mistral, avec une clé d'API
 
@@ -41,46 +40,77 @@ confidentiels (un projet d'entreprise ou de stage, des données personnelles).
    dans la liste des modèles, `Ctrl+A` pour choisir l'intégration, sélectionnez *Mistral*, puis
    collez la clé. opencode la garde hors du projet : ne la mettez jamais dans un fichier du
    dépôt.
-4. Choisissez ensuite, dans la même liste, le modèle *Ministral 3B*
-   (`mistral/ministral-3b-latest`). C'est le modèle que vous utilisez depuis le cours 1 avec
-   Ollama (`ministral-3:3b`), mais servi par Mistral : sans la compression (quantification) de
-   la version locale, et bien plus vite. S'il
-   peine sur une tâche, essayez un modèle plus gros, comme *Ministral 8B*
-   (`mistral/ministral-8b-latest`).
+4. Choisissez ensuite, dans la même liste, le modèle *Ministral 3 14B*
+   (`mistral/ministral-14b-2512`). C'est le grand frère de Ministral 3B, le modèle que vous
+   utilisez depuis le cours 1 avec Ollama (`ministral-3:3b`) : la même famille, mais un modèle
+   cinq fois plus gros. Ministral 3B (`mistral/ministral-3b-latest`) échoue sur la plupart des
+   tâches de ce projet ; *Ministral 3 14B* s'en sort bien mieux. Le plan gratuit l'autorise à 30
+   requêtes par minute, assez pour un agent. Les modèles plus gros de Mistral (*Mistral Small*,
+   *Mistral Medium*) ne sont pas disponibles sur ce plan.
 
-### Option B : un modèle local, avec Ollama
+### Option B : un modèle gratuit d'OpenCode Zen
 
-Le modèle est `ministral-3:3b`, que vous avez téléchargé avec Ollama au cours 1 (voir
-`exercices/cours1/README.md`). Avec la fenêtre de contexte qu'exige opencode, il occupe environ
-6 Go de mémoire. Pour qu'il tourne sans peine, il faut au minimum :
+[OpenCode Zen](https://opencode.ai/docs/zen/) est le service de modèles d'opencode. Certains de
+ses modèles sont gratuits, pour une durée limitée, et s'utilisent sans compte ni clé.
 
-- soit une carte graphique dédiée avec 8 Go de mémoire vidéo (par exemple une NVIDIA RTX 3060 ou
-  4060) ;
-- soit un Mac à puce Apple (M1 ou plus récent) avec 16 Go de mémoire.
+**Attention : selon le modèle, vos données peuvent être conservées, ou servir à l'entraîner.**
+La page d'OpenCode Zen le précise pour chaque modèle gratuit. Choisissez-en un qui ne conserve
+rien, comme *DeepSeek V4.1 Flash Free*, et, comme pour l'option A, n'y envoyez jamais de code ou
+de données confidentiels.
 
-Sans cela (un GPU intégré à un processeur, ou le CPU seul, même récents), le modèle fonctionne,
-mais chaque réponse prend plusieurs minutes : préférez l'option A. Dans tous les cas, un modèle
-de 3 milliards de paramètres échoue souvent : attendez-vous à des appels d'outils ratés, et à
-des boucles. C'est aussi l'occasion de voir pourquoi la supervision compte.
+1. Lancez `opencode` depuis ce répertoire, puis `/models`.
+2. Choisissez, parmi les modèles d'*OpenCode Zen*, un modèle gratuit (son nom finit par *Free*),
+   par exemple *DeepSeek V4.1 Flash Free* (`opencode/deepseek-v4.1-flash-free`). La liste des
+   modèles gratuits change au fil du temps : si celui-ci n'y est plus, prenez-en un autre.
 
-1. Créez une variante de `ministral-3:3b` avec une fenêtre de contexte de 32k tokens, et une
-   température de 0. Le *system prompt* et les outils d'opencode occupent à eux seuls plusieurs
-   milliers de tokens, et chaque fichier lu, chaque sortie de test ou du benchmark s'y ajoute :
+Ces modèles sont bien plus gros que ceux de l'option A : les tâches de ce projet leur posent
+moins de difficultés. Supervisez-les quand même ; leurs erreurs sont plus rares, mais moins
+visibles.
+
+### Option C : un modèle local, avec Ollama
+
+Rien ne quitte votre machine, mais un modèle qui y tient est petit, ou lent. Deux modèles :
+
+| modèle | taille | mémoire qu'il faut | sur ce projet |
+|---|---|---|---|
+| `ministral-3:3b`, téléchargé au cours 1 | 3 milliards de paramètres | 8 Go de mémoire vidéo, ou un Mac à puce Apple avec 16 Go | échoue souvent |
+| `gpt-oss:20b`, d'OpenAI | 21 milliards de paramètres, dont 3,6 actifs à chaque token | 16 Go en tout (mémoire vidéo et mémoire vive), 32 Go conseillés | réussit les tâches 1 à 3, peine sur la tâche 4 |
+
+Sans GPU dédié (un GPU intégré à un processeur, ou le CPU seul, même récents), chaque réponse
+prend plusieurs minutes : préférez l'option A ou B. `ministral-3:3b`, avec ses 3 milliards de
+paramètres, échoue souvent : attendez-vous à des appels d'outils ratés, et à des boucles. C'est
+aussi l'occasion de voir pourquoi la supervision compte. `gpt-oss:20b` est un modèle à experts :
+de ses 21 milliards de paramètres, seuls 3,6 servent à chaque token, ce qui le garde utilisable
+même quand il déborde de la carte graphique vers la mémoire vive. Comptez de quelques secondes à
+une minute et demie par étape de l'agent.
+
+1. Créez une variante du modèle avec une fenêtre de contexte de 32k tokens (et, pour
+   `ministral-3:3b`, une température de 0). Le *system prompt* et les outils d'opencode
+   occupent à eux seuls plusieurs milliers de tokens, et chaque fichier lu, chaque sortie de
+   test ou du benchmark s'y ajoute :
    une tâche de ce projet envoie au modèle des prompts d'une dizaine de milliers de tokens, bien
    plus que la fenêtre par défaut d'Ollama sur une machine modeste (4096 tokens). Ces réglages
-   sont fixés dans `.opencode/Modelfile` :
+   sont fixés dans `.opencode/Modelfile` (pour `ministral-3:3b`) et `.opencode/Modelfile.gpt-oss`
+   (pour `gpt-oss:20b`) :
 
    ```sh
    cd exercices/cours3/project
-   ollama create ministral-3:3b-32k -f .opencode/Modelfile
+   ollama create ministral-3:3b-32k -f .opencode/Modelfile      # ministral-3:3b
+
+   ollama pull gpt-oss:20b                                      # gpt-oss:20b : 13 Go à télécharger
+   ollama create gpt-oss:20b-32k -f .opencode/Modelfile.gpt-oss
    ```
 
+   `gpt-oss:20b` demande une version récente d'Ollama : si `ollama pull` répond qu'il faut une
+   version plus récente, mettez Ollama à jour.
+
 2. Lancez `opencode` depuis ce répertoire : `.opencode/opencode.json` le branche sur Ollama, et
-   choisit par défaut le modèle `ministral-3:3b-32k`. Vérifiez, après une première demande, la
-   fenêtre réellement utilisée : c'est la colonne `CONTEXT` de `ollama ps` (pas `ollama show`,
-   qui donne la taille maximale que le modèle accepte). Si la colonne `PROCESSOR` montre que le
-   modèle déborde sur le CPU, tout ralentit ; ramenez `num_ctx` à 16384 dans le `Modelfile`, et
-   recréez le modèle.
+   choisit par défaut le modèle `ministral-3:3b-32k` ; pour `gpt-oss:20b-32k`, choisissez-le avec
+   `/models`. Vérifiez, après une première demande, la fenêtre réellement utilisée : c'est la colonne `CONTEXT` de `ollama ps` (pas `ollama show`,
+   qui donne la taille maximale que le modèle accepte). La colonne `PROCESSOR` montre la part du
+   modèle qui déborde de la carte graphique vers le CPU : plus elle est grande, plus tout ralentit.
+   Pour `ministral-3:3b-32k`, ramenez alors `num_ctx` à 16384 dans le `Modelfile`, et recréez le
+   modèle.
 
 ### Dans opencode
 
@@ -100,7 +130,7 @@ des boucles. C'est aussi l'occasion de voir pourquoi la supervision compte.
 
 `debug/trace.py` se place entre opencode et le modèle, et affiche chaque échange : ce que le modèle
 reçoit, et ce qu'il répond. C'est la boucle agentique du cours, vue de l'intérieur. Il fonctionne
-avec les deux options.
+avec les options A et C.
 
 1. Dans un premier terminal, depuis ce répertoire, lancez `debug/trace.py` avec votre option :
 
@@ -108,14 +138,14 @@ avec les deux options.
    export MISTRAL_API_KEY=...       # option A : votre clé, que trace.py ajoute aux requêtes
    python debug/trace.py mistral
 
-   python debug/trace.py            # option B : Ollama
+   python debug/trace.py            # option C : Ollama
    ```
 
    Ajoutez `-f` pour voir les messages en entier ; sinon, ils sont coupés à 600 caractères.
 
 2. Dans un second terminal, lancez `opencode`, puis choisissez avec `/models` le modèle tracé :
-   *Ministral 3B (traced)* pour l'option A, *Ministral 3 3B (32k context, traced)* pour
-   l'option B. Ses requêtes passent alors par `trace.py` (port 11436 pour Mistral, 11435 pour
+   *Ministral 3 14B (traced)* pour l'option A ; *Ministral 3 3B (32k context, traced)* ou
+   *gpt-oss 20B (32k context, traced)* pour l'option C. Ses requêtes passent alors par `trace.py` (port 11436 pour Mistral, 11435 pour
    Ollama), au lieu d'aller directement au modèle.
 
 Pour chaque requête, `trace.py` affiche le nombre de messages et d'outils envoyés, puis les seuls

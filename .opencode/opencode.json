@@ -15,6 +15,13 @@
             "context": 32768,
             "output": 8192
           }
+        },
+        "gpt-oss:20b-32k": {
+          "name": "gpt-oss 20B (32k context)",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
         }
       }
     },
@@ -27,6 +34,13 @@
       "models": {
         "ministral-3:3b-32k": {
           "name": "Ministral 3 3B (32k context, traced)",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          }
+        },
+        "gpt-oss:20b-32k": {
+          "name": "gpt-oss 20B (32k context, traced)",
           "limit": {
             "context": 32768,
             "output": 8192
@@ -46,6 +60,13 @@
           "name": "Ministral 3B (traced)",
           "limit": {
             "context": 131072,
+            "output": 8192
+          }
+        },
+        "ministral-14b-2512": {
+          "name": "Ministral 3 14B (traced)",
+          "limit": {
+            "context": 262144,
             "output": 8192
           }
         }
