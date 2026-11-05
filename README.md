@@ -6,11 +6,15 @@ pour chacun, une tâche que vous déléguez à un agent de code, et dont vous su
 
 ## Installation : opencode et un modèle
 
-L'agent de code est [opencode](https://opencode.ai). Installez-le :
+L'agent de code est [opencode](https://opencode.ai), en version 2.2.5 ou plus récente. Sous Linux,
+installez-le avec :
 
 ```sh
-curl -fsSL https://opencode.ai/install | bash
+curl -fsSL https://opencode.ai/v2/install | bash
 ```
+
+Pour les autres systèmes, suivez les [instructions officielles](https://opencode.ai/download).
+Vérifiez ensuite la version avec `opencode --version`.
 
 Il lui faut ensuite un modèle. Deux options :
 
